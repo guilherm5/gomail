@@ -21,7 +21,14 @@ func NewUser(c *gin.Context) {
 		return
 	}
 
-	password, err := bcrypt.GenerateFromPassword([]byte(data.Senha), 8)
+	if data.Nome == "" || data.Email == "" || data.Senha == "" {
+		c.JSON(400, gin.H{
+			"Erro ao preencher os dados de cadastro": "Por favor, preencha os campos nome, email e senha",
+		})
+		return
+	}
+
+	password, err := bcrypt.GenerateFromPassword([]byte(data.Senha), 14)
 	if err != nil {
 		log.Println("Erro ao gerar hash da senha", err)
 		c.Status(500)

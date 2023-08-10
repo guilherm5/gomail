@@ -9,6 +9,7 @@ func main() {
 	router := gin.Default()
 
 	routes.User(router)
+	routes.Login(router)
 
-	router.Run()
+	router.Run(":5555")
 }
