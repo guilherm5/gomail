@@ -35,7 +35,7 @@ func NewUser(c *gin.Context) {
 		return
 	}
 
-	_, err = DB.Exec(`INSERT INTO usuario (nome, email, senha) VALUES ($1, $2, $3)`, &data.Nome, &data.Email, password)
+	_, err = DB.Exec(`INSERT INTO usuario (nome, email, senha, tipo_usuario) VALUES ($1, $2, $3, $4)`, &data.Nome, &data.Email, password, &data.TipoUsuario)
 	if err != nil {
 		log.Println("Erro ao inserir usuario", err)
 		c.Status(400)
@@ -43,4 +43,12 @@ func NewUser(c *gin.Context) {
 	}
 
 	c.Status(201)
+}
+
+func Test(c *gin.Context) {
+	c.JSON(200, "Bem vindo")
+}
+
+func Test2(c *gin.Context) {
+	c.JSON(200, "Bem vindo")
 }

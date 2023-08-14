@@ -6,5 +6,5 @@ import (
 )
 
 func Login(c *gin.Engine) {
-	c.POST("/login", controllers.LoginUser)
+	c.POST("/api/login", controllers.LoginUser)
 }

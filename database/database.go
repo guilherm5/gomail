@@ -11,11 +11,11 @@ import (
 )
 
 func Init() *sql.DB {
-	err := godotenv.Load(".env")
+	err := godotenv.Load("./.env")
 	if err != nil {
-		log.Println("Erro ao carregar variaveis de ambiente para se conectar ao banco de dados", err)
-	}
+		log.Println("Erro ao carregar variaveis de embiente", err)
 
+	}
 	host := os.Getenv("HOST")
 	database := os.Getenv("DATABASE")
 	user := os.Getenv("USER")
@@ -29,6 +29,6 @@ func Init() *sql.DB {
 	} else {
 		log.Println("Sucesso ao logar no banco de dados")
 	}
-
 	return db
+
 }

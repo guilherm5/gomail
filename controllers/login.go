@@ -39,7 +39,7 @@ func LoginUser(c *gin.Context) {
 
 	var storedHashedPassword []byte
 	for query.Next() {
-		err = query.Scan(&login.IDUsuario, &login.Nome, &login.Email, &storedHashedPassword)
+		err = query.Scan(&login.IDUsuario, &login.Nome, &login.Email, &storedHashedPassword, &login.TipoUsuario)
 		if err != nil {
 			log.Println("Erro ao buscar usuario para realizar login", err)
 			c.Status(400)
@@ -60,6 +60,7 @@ func LoginUser(c *gin.Context) {
 	claims := jwt.MapClaims{
 		"ID":   login.IDUsuario,
 		"Nome": login.Nome,
+		"Perm": login.TipoUsuario,
 		"exp":  time.Hour,
 	}
 
