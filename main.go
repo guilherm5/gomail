@@ -10,6 +10,7 @@ func main() {
 
 	routes.User(router)
 	routes.Login(router)
+	routes.Mail(router)
 
 	router.Run(":5555")
 }

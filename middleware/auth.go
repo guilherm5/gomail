@@ -6,19 +6,19 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
-func autentication() gin.HandlerFunc {
+func Autentication() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		err := godotenv.Load(".env")
-		if err != nil {
-			log.Println("Erro ao carregar variaveis de ambiente", err)
-			c.Status(500)
-			return
-		}
 		secret := os.Getenv("TOKEN")
+		if secret == "" {
+			c.AbortWithStatus(401)
+		}
+
 		authorization := c.GetHeader("Authorization")
+		if authorization == "" {
+			c.AbortWithStatus(401)
+		}
 
 		auth, err := jwt.Parse(authorization, func(t *jwt.Token) (interface{}, error) {
 			return []byte(secret), nil
@@ -28,6 +28,7 @@ func autentication() gin.HandlerFunc {
 			c.AbortWithStatus(401)
 			return
 		}
+
 		claims, ok := auth.Claims.(jwt.MapClaims)
 		if !ok {
 			c.Status(400)
@@ -41,6 +42,13 @@ func autentication() gin.HandlerFunc {
 			log.Println("Erro ao obter id do usuario a partir do token JWT", err)
 			return
 		}
+
+		/*permissoes, ok := claims["Perm"].(string)
+		if !ok {
+			c.Status(500)
+			log.Println("Erro ao obter id do usuario a partir do token JWT", err)
+			return
+		}*/
 
 		IDUser := id
 		c.Set("id", IDUser)

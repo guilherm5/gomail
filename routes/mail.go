@@ -6,12 +6,10 @@ import (
 	"github.com/guilherm5/middleware"
 )
 
-func User(c *gin.Engine) {
+func Mail(c *gin.Engine) {
 	api := c.Group("api")
 	api.Use(middleware.Autentication())
-	c.POST("/api/user", controllers.NewUser)
 
-	//apenas rota de teste
-	api.GET("/test", controllers.Test)
-	c.GET("/test2", controllers.Test2)
+	api.POST("/mail", controllers.SendMail)
+	api.GET("mails", controllers.GetMails)
 }
