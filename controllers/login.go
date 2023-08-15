@@ -72,5 +72,6 @@ func LoginUser(c *gin.Context) {
 		c.Status(500)
 		return
 	}
+
 	c.JSON(200, tokenString)
 }
