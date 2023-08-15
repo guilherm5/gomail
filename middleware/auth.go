@@ -43,15 +43,24 @@ func Autentication() gin.HandlerFunc {
 			return
 		}
 
-		/*permissoes, ok := claims["Perm"].(string)
+		perm, ok := claims["Perm"].(string)
 		if !ok {
 			c.Status(500)
 			log.Println("Erro ao obter id do usuario a partir do token JWT", err)
 			return
-		}*/
+		}
+
+		if perm == "user" && c.Request.URL.Path == "/api/users" || c.Request.URL.Path == "/api/delete-user" || c.Request.URL.Path == "/api/atualizar-user" {
+			c.JSON(401, gin.H{
+				"Acesso negado": "Você não tem permissão para acessar esta rota.",
+			})
+			c.Abort()
+		}
 
 		IDUser := id
 		c.Set("id", IDUser)
 		c.Next()
 	}
 }
+
+//crud usuario apenas se for admin
