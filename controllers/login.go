@@ -37,9 +37,8 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 
-	var storedHashedPassword []byte
 	for query.Next() {
-		err = query.Scan(&login.IDUsuario, &login.Nome, &login.Email, &storedHashedPassword, &login.TipoUsuario)
+		err = query.Scan(&login.IDUsuario, &login.Nome, &login.Email, &login.Senha, &login.TipoUsuario)
 		if err != nil {
 			log.Println("Erro ao buscar usuario para realizar login", err)
 			c.Status(400)
@@ -48,7 +47,7 @@ func LoginUser(c *gin.Context) {
 		c.Next()
 	}
 
-	err = bcrypt.CompareHashAndPassword(storedHashedPassword, []byte(credentials.Senha))
+	err = bcrypt.CompareHashAndPassword([]byte(login.Senha), []byte(credentials.Senha))
 	if err != nil {
 		log.Println("Senha inválida", err)
 		c.JSON(401, gin.H{
