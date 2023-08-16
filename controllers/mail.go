@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 
@@ -75,4 +76,27 @@ func GetMails(c *gin.Context) {
 	}
 	c.JSON(200, mailData)
 
+}
+
+func GetMailUser(c *gin.Context) {
+	var jsonResult json.RawMessage
+	var data models.User
+
+	err := c.ShouldBindJSON(&data)
+	if err != nil {
+		log.Println("Erro ao ler body da requisição", err)
+		c.Status(400)
+		return
+	}
+
+	query := fmt.Sprintf(`SELECT getMailUser('%s')`, *data.Nome)
+
+	row := DB.QueryRow(query)
+
+	if err := row.Scan(&jsonResult); err != nil {
+		log.Println("Erro ao realizar select na função (bd) get mail usuário", err)
+		c.Status(400)
+		return
+	}
+	c.JSON(200, jsonResult)
 }

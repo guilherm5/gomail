@@ -14,7 +14,4 @@ func User(c *gin.Engine) {
 	api.DELETE("/delete-user", controllers.DeleteUsers)
 	api.PUT("/atualizar-user", controllers.UpdateUser)
 
-	//apenas rota de teste
-	api.GET("/test", controllers.Test)
-	c.GET("/test2", controllers.Test2)
 }
