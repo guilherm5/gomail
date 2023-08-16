@@ -21,7 +21,7 @@ func NewUser(c *gin.Context) {
 		return
 	}
 
-	if data.Nome == "" || data.Email == "" || data.Senha == "" {
+	if data.Nome == nil || data.Email == "" || data.Senha == "" {
 		c.JSON(400, gin.H{
 			"Erro ao preencher os dados de cadastro": "Por favor, preencha os campos nome, email e senha",
 		})
@@ -100,12 +100,4 @@ func UpdateUser(c *gin.Context) {
 	}
 	log.Print(res.RowsAffected())
 	c.Status(200)
-}
-
-func Test(c *gin.Context) {
-	c.JSON(200, "Bem vindo")
-}
-
-func Test2(c *gin.Context) {
-	c.JSON(200, "Bem vindo")
 }
