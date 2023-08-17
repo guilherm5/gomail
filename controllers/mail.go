@@ -14,7 +14,6 @@ import (
 func SendMail(c *gin.Context) {
 	var data models.Mail
 	user := c.GetFloat64("id")
-	log.Println(user)
 	var pass = os.Getenv("PASS")
 	var smtpHost = os.Getenv("smtpHost")
 	var From = os.Getenv("Remetente")
