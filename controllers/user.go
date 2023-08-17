@@ -45,6 +45,8 @@ func NewUser(c *gin.Context) {
 	c.Status(201)
 }
 
+//funcoes para adm
+
 func GetUsers(c *gin.Context) {
 	var data models.User
 	var response []models.User
@@ -92,12 +94,61 @@ func UpdateUser(c *gin.Context) {
 
 	newPassword, err := bcrypt.GenerateFromPassword([]byte(data.Senha), 14)
 
-	res, err := DB.Exec(`UPDATE usuario SET nome = $1, email = $2, senha = $3, tipo_usuario = $4 WHERE id_usuario = $5`, &data.Nome, &data.Email, newPassword, &data.TipoUsuario, &data.IDUsuario)
+	_, err = DB.Exec(`UPDATE usuario SET nome = $1, email = $2, senha = $3, tipo_usuario = $4 WHERE id_usuario = $5`, &data.Nome, &data.Email, newPassword, &data.TipoUsuario, &data.IDUsuario)
 	if err != nil {
 		log.Println("Erro ao atualizar usuario", err)
 		c.Status(400)
 		return
 	}
-	log.Print(res.RowsAffected())
+	c.Status(200)
+}
+
+//funcoes para user
+
+func GetMyUser(c *gin.Context) {
+	var data models.User
+	user := c.GetFloat64("id")
+
+	err := DB.QueryRow(`SELECT id_usuario, nome, email, tipo_usuario FROM usuario WHERE id_usuario = $1`, &user).Scan(&data.IDUsuario, &data.Nome, &data.Email, &data.TipoUsuario)
+	if err != nil {
+		log.Println("Erro ao buscar usuario", err)
+		c.Status(400)
+		return
+	}
+
+	c.JSON(200, data)
+}
+
+func UpdateMyUser(c *gin.Context) {
+	var data models.User
+	user := c.GetFloat64("id")
+
+	err := c.ShouldBindJSON(&data)
+	if err != nil {
+		log.Println("Erro ao ler body da requisição", err)
+		c.Status(400)
+		return
+	}
+
+	newPassword, err := bcrypt.GenerateFromPassword([]byte(data.Senha), 14)
+
+	_, err = DB.Exec(`UPDATE usuario SET nome = $1, email = $2, senha = $3 WHERE id_usuario = $4`, &data.Nome, &data.Email, newPassword, user)
+	if err != nil {
+		log.Println("Erro ao atualizar usuario", err)
+		c.Status(400)
+		return
+	}
+
+	c.Status(200)
+}
+
+func DeleteMyUser(c *gin.Context) {
+	user := c.GetFloat64("id")
+	_, err := DB.Exec(`DELETE FROM usuario WHERE id_usuario = $1`, &user)
+	if err != nil {
+		log.Println("Erro ao deletar usuario", err)
+		c.Status(400)
+		return
+	}
 	c.Status(200)
 }
