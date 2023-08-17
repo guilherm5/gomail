@@ -24,7 +24,7 @@ func Init() *sql.DB {
 	connStr := fmt.Sprintf("user=%s dbname=%s password=%s host=%s sslmode=verify-full", user, database, password, host)
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatal("Erro ao conectar ao banco de dados", err)
+		log.Fatal("Erro ao conectar ao banco de dados neon", err)
 
 	} else {
 		log.Println("Sucesso ao logar no banco de dados")
