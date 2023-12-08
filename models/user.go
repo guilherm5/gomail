@@ -6,4 +6,6 @@ type User struct {
 	Email       string  `json:"email"`
 	Senha       string  `json:"senha"`
 	TipoUsuario string  `json:"tipo_usuario"`
+	Assunto     string  `json:"assunto"`
+	Conteudo    string  `json:"conteudo"`
 }

@@ -13,15 +13,15 @@ import (
 func Init() *sql.DB {
 	err := godotenv.Load("./.env")
 	if err != nil {
-		log.Println("Erro ao carregar variaveis de embiente", err)
-
+		log.Println("Erro ao carregar variaveis de embiente na funcao de banco de dados", err)
+		os.Exit(1)
 	}
 	host := os.Getenv("HOST")
 	database := os.Getenv("DATABASE")
 	user := os.Getenv("USER")
 	password := os.Getenv("PASSWORD")
 
-	connStr := fmt.Sprintf("user=%s dbname=%s password=%s host=%s sslmode=verify-full", user, database, password, host)
+	connStr := fmt.Sprintf("user=%s dbname=%s password=%s host=%s sslmode=require", user, database, password, host)
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal("Erro ao conectar ao banco de dados neon", err)
