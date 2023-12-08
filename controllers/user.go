@@ -35,6 +35,9 @@ func NewUser(c *gin.Context) {
 		return
 	}
 
+	if data.TipoUsuario == "" {
+		data.TipoUsuario = "user"
+	}
 	_, err = DB.Exec(`INSERT INTO usuario (nome, email, senha, tipo_usuario) VALUES ($1, $2, $3, $4)`, &data.Nome, &data.Email, password, &data.TipoUsuario)
 	if err != nil {
 		log.Println("Erro ao inserir usuario", err)
@@ -45,8 +48,7 @@ func NewUser(c *gin.Context) {
 	c.Status(201)
 }
 
-//funcoes para adm
-
+// funcoes para adm
 func GetUsers(c *gin.Context) {
 	var data models.User
 	var response []models.User
@@ -82,6 +84,8 @@ func DeleteUsers(c *gin.Context) {
 	_, err = DB.Exec(`DELETE FROM usuario WHERE id_usuario = $1`, data.IDUsuario)
 }
 
+// antes de fazer update eu tenho que fazer um select no banco de dados e armazenar os dados em algum lugar
+// caso o usuario queira alterar só algum outro elemento, ex: quero alterar o nome mas nao quero alterar a senha, a senha deve ser a mesma que esta no banco de dados.
 func UpdateUser(c *gin.Context) {
 	var data models.User
 
@@ -103,8 +107,7 @@ func UpdateUser(c *gin.Context) {
 	c.Status(200)
 }
 
-//funcoes para user
-
+// funcoes para user
 func GetMyUser(c *gin.Context) {
 	var data models.User
 	user := c.GetFloat64("id")

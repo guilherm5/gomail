@@ -51,7 +51,7 @@ func Autentication() gin.HandlerFunc {
 		}
 
 		if perm == "user" {
-			if c.Request.URL.Path == "/api/users" || c.Request.URL.Path == "/api/delete-user" || c.Request.URL.Path == "/api/atualizar-user" || c.Request.URL.Path == "/api/mails" || c.Request.URL.Path == "/api/mail-user" {
+			if c.Request.URL.Path == "/api/users" || c.Request.URL.Path == "/api/delete-user" || c.Request.URL.Path == "/api/atualizar-user" || c.Request.URL.Path == "/api/mails" {
 				c.JSON(401, gin.H{
 					"Acesso negado": "Você não tem permissão para acessar esta rota.",
 				})

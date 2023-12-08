@@ -15,7 +15,7 @@ import (
 func LoginUser(c *gin.Context) {
 	err := godotenv.Load("./.env")
 	if err != nil {
-		log.Println("Erro ao carregar variaveis de embiente", err)
+		log.Println("Erro ao carregar variaveis de embiente para login", err)
 		c.Status(400)
 		return
 	}
