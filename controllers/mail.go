@@ -1,14 +1,20 @@
 package controllers
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"os"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/gin-gonic/gin"
+	"github.com/gofrs/uuid"
 	"github.com/guilherm5/models"
+	"github.com/guilherm5/service"
+
 	"gopkg.in/gomail.v2"
 )
 
@@ -50,7 +56,12 @@ func SendMail(c *gin.Context) {
 }
 
 func FileMail(c *gin.Context) {
-	//user := c.GetFloat64("id")
+	strFile, err := uuid.NewV4()
+	if err != nil {
+		log.Println("Erro ao gerar uuid foto", err)
+	}
+	service := service.S3Aws()
+	user := c.GetFloat64("id")
 	var pass = os.Getenv("PASS")
 	var smtpHost = os.Getenv("smtpHost")
 	var From = os.Getenv("Remetente")
@@ -65,6 +76,11 @@ func FileMail(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
 		log.Println("Erro ao receber arquivo no body da requisição", err)
+		c.Status(400)
+		return
+	}
+	if file == nil {
+		log.Println("Arquivo nulo")
 		c.Status(400)
 		return
 	}
@@ -94,12 +110,29 @@ func FileMail(c *gin.Context) {
 		return
 	}
 
-	/*_, err = DB.Exec(`INSERT INTO mail (conteudo, assunto, destinatario, remetente, id_usuario) VALUES ($1, $2, $3, $4, $5)`, &data.Conteudo, &data.Assunto, &data.Destinatario, From, user)
+	uploader := s3manager.NewUploader(service)
+	contentType := file.Header.Get("Content-Type")
+	input := &s3manager.UploadInput{
+		Bucket:             aws.String("gomail-go"),
+		Key:                aws.String("files-mail/" + strFile.String()),
+		Body:               src,
+		ContentType:        &contentType,
+		ContentDisposition: aws.String("inline"),
+	}
+
+	_, err = uploader.UploadWithContext(context.Background(), input)
+	if err != nil {
+		log.Println("Erro ao realizar uplaod da imagem no bucket s3", err)
+		c.Status(101)
+	}
+	linkPost := fmt.Sprintf("https://frienlinkfotos.s3.amazonaws.com/%s", strFile)
+
+	_, err = DB.Exec(`INSERT INTO mail (conteudo, assunto, destinatario, remetente, id_usuario, caminho_arquivo, uuid_mail) VALUES ($1, $2, $3, $4, $5, $6, $7)`, Conteudo, Assunto, Destinatario, From, user, linkPost, strFile)
 	if err != nil {
 		log.Println("Erro ao realizar insert mail", err)
 		c.Status(400)
 		return
-	}*/
+	}
 
 	c.Status(200)
 }
@@ -130,7 +163,6 @@ func GetMails(c *gin.Context) {
 
 	}
 	c.JSON(200, mailData)
-
 }
 
 func GetMailUser(c *gin.Context) {
