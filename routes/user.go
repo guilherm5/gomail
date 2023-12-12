@@ -17,7 +17,8 @@ func User(c *gin.Engine) {
 
 	//crud para usuarios
 	api.GET("/my-user", controllers.GetMyUser)
-	api.PUT("/update-my-user", controllers.UpdateMyUser)
+	api.PUT("/update-secret-my-user", controllers.UpdateMyUser)
+	api.PUT("/update-name-my-user", controllers.UpdateMyUser)
 	api.DELETE("/delete-my-user", controllers.DeleteMyUser)
 
 }

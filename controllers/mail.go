@@ -91,25 +91,13 @@ func FileMail(c *gin.Context) {
 		c.Status(400)
 		return
 	}
-
-	src.Seek(0, io.SeekStart)
-
-	mail.SetHeader("From", From)
-	mail.SetHeader("To", Destinatario)
-	mail.SetHeader("Subject", Assunto)
-	mail.SetBody("text/plain", Conteudo)
-	mail.Attach(file.Filename, gomail.SetCopyFunc(func(writer io.Writer) error {
-		_, err := io.Copy(writer, src)
-		return err
-	}))
-
-	Autentication := gomail.NewDialer(smtpHost, 587, From, pass)
-	if err := Autentication.DialAndSend(mail); err != nil {
-		log.Println("Erro ao enviar email", err)
+	_, err = io.ReadAll(src)
+	if err != nil {
+		log.Println("Erro ao ler arquivo", err)
 		c.Status(400)
 		return
 	}
-
+	src.Seek(0, io.SeekStart)
 	uploader := s3manager.NewUploader(service)
 	contentType := file.Header.Get("Content-Type")
 	input := &s3manager.UploadInput{
@@ -126,6 +114,22 @@ func FileMail(c *gin.Context) {
 		c.Status(101)
 	}
 	linkPost := fmt.Sprintf("https://frienlinkfotos.s3.amazonaws.com/%s", strFile)
+
+	mail.SetHeader("From", From)
+	mail.SetHeader("To", Destinatario)
+	mail.SetHeader("Subject", Assunto)
+	mail.SetBody("text/plain", Conteudo)
+	mail.Attach(file.Filename, gomail.SetCopyFunc(func(writer io.Writer) error {
+		_, err := io.Copy(writer, src)
+		return err
+	}))
+
+	Autentication := gomail.NewDialer(smtpHost, 587, From, pass)
+	if err := Autentication.DialAndSend(mail); err != nil {
+		log.Println("Erro ao enviar email", err)
+		c.Status(400)
+		return
+	}
 
 	_, err = DB.Exec(`INSERT INTO mail (conteudo, assunto, destinatario, remetente, id_usuario, caminho_arquivo, uuid_mail) VALUES ($1, $2, $3, $4, $5, $6, $7)`, Conteudo, Assunto, Destinatario, From, user, linkPost, strFile)
 	if err != nil {

@@ -123,26 +123,46 @@ func GetMyUser(c *gin.Context) {
 }
 
 func UpdateMyUser(c *gin.Context) {
-	var data models.User
-	user := c.GetFloat64("id")
+	if c.Request.URL.Path == "/api/update-secret-my-user" {
+		var data models.User
+		user := c.GetFloat64("id")
 
-	err := c.ShouldBindJSON(&data)
-	if err != nil {
-		log.Println("Erro ao ler body da requisição", err)
-		c.Status(400)
-		return
+		err := c.ShouldBindJSON(&data)
+		if err != nil {
+			log.Println("Erro ao ler body da requisição", err)
+			c.Status(400)
+			return
+		}
+		newPassword, err := bcrypt.GenerateFromPassword([]byte(data.Senha), 14)
+
+		_, err = DB.Exec(`UPDATE usuario SET senha = $1 WHERE id_usuario = $2`, newPassword, user)
+		if err != nil {
+			log.Println("Erro ao atualizar usuario", err)
+			c.Status(400)
+			return
+		}
+
+		c.Status(200)
+	} else if c.Request.URL.Path == "/api/update-name-my-user" {
+		var data models.User
+		user := c.GetFloat64("id")
+
+		err := c.ShouldBindJSON(&data)
+		if err != nil {
+			log.Println("Erro ao ler body da requisição", err)
+			c.Status(400)
+			return
+		}
+		_, err = DB.Exec(`UPDATE usuario SET nome = $1 WHERE id_usuario = $2`, data.Nome, user)
+		if err != nil {
+			log.Println("Erro ao atualizar usuario", err)
+			c.Status(400)
+			return
+		}
+
+		c.Status(200)
 	}
 
-	newPassword, err := bcrypt.GenerateFromPassword([]byte(data.Senha), 14)
-
-	_, err = DB.Exec(`UPDATE usuario SET nome = $1, email = $2, senha = $3 WHERE id_usuario = $4`, &data.Nome, &data.Email, newPassword, user)
-	if err != nil {
-		log.Println("Erro ao atualizar usuario", err)
-		c.Status(400)
-		return
-	}
-
-	c.Status(200)
 }
 
 func DeleteMyUser(c *gin.Context) {
