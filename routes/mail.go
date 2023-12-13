@@ -14,4 +14,5 @@ func Mail(c *gin.Engine) {
 	api.POST("/file-mail", controllers.FileMail)
 	api.GET("/mails", controllers.GetMails)
 	api.GET("/mail-user", controllers.GetMailUser)
+	api.GET("mail-received", controllers.MailReceived)
 }

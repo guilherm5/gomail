@@ -7,9 +7,12 @@ import (
 	"io"
 	"log"
 	"os"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/emersion/go-imap"
+	"github.com/emersion/go-imap/client"
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
 	"github.com/guilherm5/models"
@@ -182,4 +185,59 @@ func GetMailUser(c *gin.Context) {
 		return
 	}
 	c.JSON(200, jsonResult)
+}
+
+func MailReceived(c *gin.Context) {
+	var server = os.Getenv("server")
+	var username = os.Getenv("Remetente")
+	var password = os.Getenv("PASS")
+
+	// Conectar ao servidor IMAP
+	im, err := client.DialTLS(fmt.Sprintf("%s:993", server), nil)
+	if err != nil {
+		log.Fatal("falha ao conectar no servidor imap", err)
+		c.Status(400)
+		return
+	}
+	defer im.Logout()
+
+	// Autenticar com o servidor IMAP
+	if err := im.Login(username, password); err != nil {
+		log.Fatal("falha ao conectar no servidor imap", err)
+		c.Status(400)
+		return
+	}
+
+	// Selecionar a caixa de correio
+	mbox, err := im.Select("INBOX", false)
+	if err != nil {
+		log.Fatal("erro ao obter emails", err)
+		c.Status(400)
+		return
+	}
+
+	// Listar os IDs dos e-mails na caixa de correio
+	from := uint32(1)
+	to := mbox.Messages
+	seqset := new(imap.SeqSet)
+	seqset.AddRange(from, to)
+
+	messages := make(chan *imap.Message, 10)
+	go func() {
+		if err := im.Fetch(seqset, []imap.FetchItem{imap.FetchEnvelope}, messages); err != nil {
+			log.Fatal(err)
+		}
+	}()
+	dataAtual := time.Now().Format("02-Jan-2006")
+	for msg := range messages {
+		dataMensagem := msg.Envelope.Date.Format("02-Jan-2006")
+		if dataMensagem == dataAtual {
+			c.JSON(200, gin.H{
+				"Assunto:": msg.Envelope.Subject,
+				"De:":      msg.Envelope.From[0],
+				"Data:":    msg.Envelope.Date.Format("02-Jan-2006"),
+			})
+		}
+
+	}
 }
