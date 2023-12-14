@@ -11,8 +11,8 @@ func Mail(c *gin.Engine) {
 	api.Use(middleware.Autentication())
 
 	api.POST("/mail", controllers.SendMail)
-	api.POST("/file-mail", controllers.FileMail)
+	api.POST("/file-mail", controllers.SendMail)
 	api.GET("/mails", controllers.GetMails)
 	api.GET("/mail-user", controllers.GetMailUser)
-	api.GET("mail-received", controllers.MailReceived)
+	api.GET("/mail-received", controllers.MailReceived)
 }
