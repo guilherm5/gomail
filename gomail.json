@@ -1,0 +1,496 @@
+{
+	"info": {
+		"_postman_id": "96d6f7bc-fa05-4927-b530-89f879ff0024",
+		"name": "Collection GOMAIL",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24718052",
+		"_collection_link": "https://bold-desert-538278.postman.co/workspace/EstudosPessoais~d8f0f03a-b45a-4088-bd00-dd0c37b51250/collection/24718052-96d6f7bc-fa05-4927-b530-89f879ff0024?action=share&source=collection_link&creator=24718052"
+	},
+	"item": [
+		{
+			"name": "Local Copy",
+			"item": [
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "1 - Criar usuario",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nome\": \"\",\r\n    \"email\": \"\",\r\n    \"senha\": \"\",\r\n    \"tipo_usuario\": \"\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:5555/api/user",
+									"host": [
+										"localhost"
+									],
+									"port": "5555",
+									"path": [
+										"api",
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "2 - Login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"\",\r\n    \"senha\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:5555/api/login",
+									"host": [
+										"localhost"
+									],
+									"port": "5555",
+									"path": [
+										"api",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "3 - Send Mail",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "<TOKEN JWT OBTIDO NA ROTA  2 - Login>",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"destinatario\": \"\",\r\n    \"assunto\": \"\",\r\n    \"conteudo\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:5555/api/mail",
+									"host": [
+										"localhost"
+									],
+									"port": "5555",
+									"path": [
+										"api",
+										"mail"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "4 - Get Mail user",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "<TOKEN JWT OBTIDO NA ROTA  2 - Login>",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:5555/api/mail-user",
+									"host": [
+										"localhost"
+									],
+									"port": "5555",
+									"path": [
+										"api",
+										"mail-user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "5 - Get My User",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "<TOKEN JWT OBTIDO NA ROTA  2 - Login>",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "localhost:5555/api/my-user",
+									"host": [
+										"localhost"
+									],
+									"port": "5555",
+									"path": [
+										"api",
+										"my-user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "6 - Update my name user",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "<TOKEN JWT OBTIDO NA ROTA  2 - Login>",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nome\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:5555/api/update-name-my-user",
+									"host": [
+										"localhost"
+									],
+									"port": "5555",
+									"path": [
+										"api",
+										"update-name-my-user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "9 - Delete My User",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "<TOKEN JWT OBTIDO NA ROTA  2 - Login>",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "localhost:5555/api/delete-my-user",
+									"host": [
+										"localhost"
+									],
+									"port": "5555",
+									"path": [
+										"api",
+										"delete-my-user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "7 - Send file",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "<TOKEN JWT OBTIDO NA ROTA  2 - Login>",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "destinatario",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "assunto",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "conteudo",
+											"value": "",
+											"type": "text"
+										},
+										{
+											"key": "file",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "localhost:5555/api/file-mail",
+									"host": [
+										"localhost"
+									],
+									"port": "5555",
+									"path": [
+										"api",
+										"file-mail"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "8 - Update secret my user",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "<TOKEN JWT OBTIDO NA ROTA  2 - Login>",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"senha\": \"\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:5555/api/update-secret-my-user",
+									"host": [
+										"localhost"
+									],
+									"port": "5555",
+									"path": [
+										"api",
+										"update-secret-my-user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10 - Emails Recebidos",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "<TOKEN JWT OBTIDO NA ROTA  2 - Login>",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "localhost:5555/api/mail-received",
+									"host": [
+										"localhost"
+									],
+									"port": "5555",
+									"path": [
+										"api",
+										"mail-received"
+									],
+									"query": [
+										{
+											"key": "",
+											"value": null,
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Adm",
+					"item": [
+						{
+							"name": "Get mails",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "<TOKEN JWT OBTIDO NA ROTA  2 - Login>",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "localhost:5555/api/mails",
+									"host": [
+										"localhost"
+									],
+									"port": "5555",
+									"path": [
+										"api",
+										"mails"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get user",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "<TOKEN JWT OBTIDO NA ROTA  2 - Login>",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "localhost:5555/api/users",
+									"host": [
+										"localhost"
+									],
+									"port": "5555",
+									"path": [
+										"api",
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete users",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "<TOKEN JWT OBTIDO NA ROTA  2 - Login>",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id_usuario\": \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:5555/api/delete-user",
+									"host": [
+										"localhost"
+									],
+									"port": "5555",
+									"path": [
+										"api",
+										"delete-user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Atualizar-user",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "<TOKEN JWT OBTIDO NA ROTA  2 - Login>",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"nome\": \"\",\r\n    \"email\": \"\",\r\n    \"senha\": \"\",\r\n    \"tipo_usuario\": \"\",\r\n    \"id_usuario\": \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:5555/api/atualizar-user",
+									"host": [
+										"localhost"
+									],
+									"port": "5555",
+									"path": [
+										"api",
+										"atualizar-user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Object S3",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "<TOKEN JWT OBTIDO NA ROTA  2 - Login>",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "localhost:5555/api/delete-object",
+									"host": [
+										"localhost"
+									],
+									"port": "5555",
+									"path": [
+										"api",
+										"delete-object"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

@@ -15,4 +15,6 @@ func Mail(c *gin.Engine) {
 	api.GET("/mails", controllers.GetMails)
 	api.GET("/mail-user", controllers.GetMailUser)
 	api.GET("/mail-received", controllers.MailReceived)
+
+	//api.DELETE("/delete-object", controllers.S3Object)
 }
