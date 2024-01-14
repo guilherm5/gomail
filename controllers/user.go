@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -89,7 +90,7 @@ func DeleteUsers(c *gin.Context) {
 func UpdateUser(c *gin.Context) {
 	var data models.User
 
-	err := c.ShouldBindJSON(&data)
+	err := c.ShouldBindJSON(&data.Senha)
 	if err != nil {
 		log.Println("Erro ao ler body da requisição", err)
 		c.Status(400)
@@ -133,6 +134,7 @@ func UpdateMyUser(c *gin.Context) {
 			c.Status(400)
 			return
 		}
+		fmt.Println(data.Senha)
 		newPassword, err := bcrypt.GenerateFromPassword([]byte(data.Senha), 14)
 
 		_, err = DB.Exec(`UPDATE usuario SET senha = $1 WHERE id_usuario = $2`, newPassword, user)
@@ -141,6 +143,7 @@ func UpdateMyUser(c *gin.Context) {
 			c.Status(400)
 			return
 		}
+		log.Println(newPassword)
 
 		c.Status(200)
 	} else if c.Request.URL.Path == "/api/update-name-my-user" {

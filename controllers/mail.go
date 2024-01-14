@@ -22,6 +22,12 @@ import (
 )
 
 func SendMail(c *gin.Context) {
+	uuid_mail, err := uuid.NewV4()
+	if err != nil {
+		log.Println("Erro ao gerar uuid do arquivo", err)
+		c.Status(400)
+		return
+	}
 	var data models.Mail
 	user := c.GetFloat64("id")
 	var pass = os.Getenv("PASS")
@@ -47,7 +53,7 @@ func SendMail(c *gin.Context) {
 			c.Status(400)
 			return
 		}
-		_, err = DB.Exec(`INSERT INTO mail (conteudo, assunto, destinatario, remetente, id_usuario) VALUES ($1, $2, $3, $4, $5)`, &data.Conteudo, &data.Assunto, &data.Destinatario, From, user)
+		_, err = DB.Exec(`INSERT INTO mail (conteudo, assunto, destinatario, remetente, id_usuario, uuid_mail) VALUES ($1, $2, $3, $4, $5, $6)`, &data.Conteudo, &data.Assunto, &data.Destinatario, From, user, uuid_mail)
 		if err != nil {
 			log.Println("Erro ao realizar insert mail", err)
 			c.Status(400)
@@ -55,12 +61,6 @@ func SendMail(c *gin.Context) {
 		}
 		c.Status(200)
 	} else if c.Request.URL.Path == "/api/file-mail" {
-		strFile, err := uuid.NewV4()
-		if err != nil {
-			log.Println("Erro ao gerar uuid foto", err)
-			c.Status(400)
-			return
-		}
 		service := service.S3Aws()
 		Destinatario := c.PostForm("destinatario")
 		Assunto := c.PostForm("assunto")
@@ -94,7 +94,7 @@ func SendMail(c *gin.Context) {
 		contentType := file.Header.Get("Content-Type")
 		input := &s3manager.UploadInput{
 			Bucket:             aws.String("gomail-go"),
-			Key:                aws.String("files-mail/" + strFile.String()),
+			Key:                aws.String("files-mail/" + uuid_mail.String()),
 			Body:               src,
 			ContentType:        &contentType,
 			ContentDisposition: aws.String("inline"),
@@ -105,7 +105,7 @@ func SendMail(c *gin.Context) {
 			log.Println("Erro ao realizar uplaod da imagem no bucket s3", err)
 			c.Status(101)
 		}
-		linkPost := fmt.Sprintf("https://frienlinkfotos.s3.amazonaws.com/%s", strFile)
+		linkPost := fmt.Sprintf("https://frienlinkfotos.s3.amazonaws.com/%s", uuid_mail)
 
 		mail.SetHeader("From", From)
 		mail.SetHeader("To", Destinatario)
@@ -123,7 +123,7 @@ func SendMail(c *gin.Context) {
 			return
 		}
 
-		_, err = DB.Exec(`INSERT INTO mail (conteudo, assunto, destinatario, remetente, id_usuario, caminho_arquivo, uuid_mail) VALUES ($1, $2, $3, $4, $5, $6, $7)`, Conteudo, Assunto, Destinatario, From, user, linkPost, strFile)
+		_, err = DB.Exec(`INSERT INTO mail (conteudo, assunto, destinatario, remetente, id_usuario, caminho_arquivo, uuid_mail) VALUES ($1, $2, $3, $4, $5, $6, $7)`, Conteudo, Assunto, Destinatario, From, user, linkPost, uuid_mail)
 		if err != nil {
 			log.Println("Erro ao realizar insert mail", err)
 			c.Status(400)
@@ -230,3 +230,21 @@ func GetMailUser(c *gin.Context) {
 	}
 	c.JSON(200, jsonResult)
 }
+
+/*func S3Object(c *gin.Context) {
+	service := service.S3Aws()
+	svc := s3.New(service)
+
+	Bucket := os.Getenv("Bucket")
+
+	input := &s3.DeleteObjectInput{
+		Bucket: aws.String(Bucket),
+		Key:    aws.String()
+	}
+	result, err := svc.DeleteObject(input)
+	if err != nil {
+		log.Println("Erro ao deletar objeto bucket", err)
+		c.Status(100)
+	}
+	log.Println(result)
+}*/
